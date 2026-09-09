@@ -44,9 +44,31 @@ Deployed on [Render](https://render.com) as a free Web Service:
 - **Start command:** `gunicorn app:app`
 - **Environment variable:** `SECRET_KEY` (used to sign session cookies)
 
-Note: Render's free tier has an ephemeral filesystem, so `labels.db` can be
-reset on redeploys or restarts. This only affects previously collected
-data persisting indefinitely, not the app's correctness.
+## Known limitations of the free Render tier
+
+Free Web Services on Render sleep after about 15 minutes of no traffic, and
+also have no persistent disk attached. Two things follow from this:
+
+**The link can appear broken on the first visit after it has been idle.**
+Waking a sleeping instance can take 30-60+ seconds, and the very first
+request during that window sometimes times out or shows an error page
+instead of waiting it out. In practice this has happened: a participant
+opened the link while the instance was asleep, saw it fail to load, and it
+only came back after a retry. If you (or a participant) see this, wait a
+few seconds and reload the page. Once the instance is awake, it responds
+normally until it goes idle again.
+
+**Collected data resets on redeploys and on spin-down/wake cycles.**
+With no persistent disk, `labels.db` is recreated empty both when a new
+deploy runs and when the instance restarts after sleeping. Only the rows in
+the `labels` table are affected, not the app's code or correctness: once
+awake, the labeling flow and `/data` page work exactly as before.
+
+If long-term persistence or more reliable uptime were needed, the fix would
+be a paid Render plan (no spin-down, persistent disk) and/or swapping SQLite
+for a hosted database with its own free tier (for example Render's own
+Postgres, Supabase, or Neon). Neither was necessary for this assignment's
+scope.
 
 ## Project structure
 
