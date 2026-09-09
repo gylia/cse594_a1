@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emotion Labeling Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Emotion Labeling Task</h1>
+    <div class="card">
+      <p>Thank you for participating! In this task you will read short text messages and label the emotion each one expresses.</p>
+      <ul>
+        <li>You will label <strong>5 messages</strong>, shown one at a time.</li>
+        <li>For each message, choose the <strong>single emotion</strong> that best describes what the writer is feeling: anger, fear, joy, love, sadness, or surprise.</li>
+        <li>There are no right or wrong answers. Just go with your first impression!</li>
+        <li>The task takes about 2 minutes. Your responses are recorded anonymously with a random participant ID.</li>
+      </ul>
+      <a class="btn-primary" href="{{ url_for('start') }}">Begin task</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emotion Labeling Task</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>What emotion is expressed here?</h1>
+    <div class="progress">Message {{ current }} of {{ total }}</div>
+    <div class="card">
+      <div class="tweet">&ldquo;{{ tweet.text }}&rdquo;</div>
+      <form method="post">
+        <div class="emotion-grid">
+          {% for emotion in emotions %}
+            <button class="emotion-btn" type="submit" name="emotion" value="{{ emotion }}">{{ emotion }}</button>
+          {% endfor %}
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
