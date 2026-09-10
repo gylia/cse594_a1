@@ -49,14 +49,14 @@ Deployed on [Render](https://render.com) as a free Web Service:
 Free Web Services on Render sleep after about 15 minutes of no traffic, and
 also have no persistent disk attached. Two things follow from this:
 
-**The link can appear broken on the first visit after it has been idle.**
-Waking a sleeping instance can take 30-60+ seconds, and the very first
-request during that window sometimes times out or shows an error page
-instead of waiting it out. In practice this has happened: a participant
-opened the link while the instance was asleep, saw it fail to load, and it
-only came back after a retry. If you (or a participant) see this, wait a
-few seconds and reload the page. Once the instance is awake, it responds
-normally until it goes idle again.
+**The first visit after it has been idle shows a loading screen, not the app.**
+Confirmed by testing: the first request to a sleeping instance is met with
+Render's own "Application loading" page (branded, with live status logs
+like "SERVICE WAKING UP" and "STARTING THE INSTANCE"), not an error. After
+about 30 seconds it finishes and your app loads normally, no action needed
+beyond waiting. As a practical courtesy, open the link yourself a minute or
+two before sending it to someone, so the instance is already awake when
+they click it.
 
 **Collected data resets on redeploys and on spin-down/wake cycles.**
 With no persistent disk, `labels.db` is recreated empty both when a new
