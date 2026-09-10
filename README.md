@@ -46,29 +46,16 @@ Deployed on [Render](https://render.com) as a free Web Service:
 
 ## Known limitations of the free Render tier
 
-Free Web Services on Render sleep after about 15 minutes of no traffic, and
-also have no persistent disk attached. Two things follow from this:
+Free Web Services on Render sleep after about 15 minutes of no traffic and
+have no persistent disk. Effect: **any previously collected labels are lost**
+whenever the instance sleeps and wakes back up, or whenever a new deploy
+runs. A participant opening the link after an idle period will also hit a
+~30 second loading screen first, which can look like the link is broken if
+they don't wait it out.
 
-**The first visit after it has been idle shows a loading screen, not the app.**
-Confirmed by testing: the first request to a sleeping instance is met with
-Render's own "Application loading" page (branded, with live status logs
-like "SERVICE WAKING UP" and "STARTING THE INSTANCE"), not an error. After
-about 30 seconds it finishes and your app loads normally, no action needed
-beyond waiting. As a practical courtesy, open the link yourself a minute or
-two before sending it to someone, so the instance is already awake when
-they click it.
-
-**Collected data resets on redeploys and on spin-down/wake cycles.**
-With no persistent disk, `labels.db` is recreated empty both when a new
-deploy runs and when the instance restarts after sleeping. Only the rows in
-the `labels` table are affected, not the app's code or correctness: once
-awake, the labeling flow and `/data` page work exactly as before.
-
-If long-term persistence or more reliable uptime were needed, the fix would
-be a paid Render plan (no spin-down, persistent disk) and/or swapping SQLite
-for a hosted database with its own free tier (for example Render's own
-Postgres, Supabase, or Neon). Neither was necessary for this assignment's
-scope.
+Fix: a paid Render plan (no spin-down, persistent disk), or swap SQLite for
+a hosted database with its own free tier (Render's own Postgres, Supabase,
+Neon).
 
 ## Project structure
 
