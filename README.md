@@ -29,9 +29,10 @@ will not be done for the purposes of this assignment.
   chosen_label, timestamp`. Storing the tweet text directly (not just its
   ID) means each row is self-contained: no need to cross-reference
   `data/tweets.json` to see what was labeled.
-- `/data` renders every row in that table as an HTML table. It has no
-  authentication (matching the assignment's "no auth" scope) and isn't
-  linked from the participant-facing pages.
+- `/data` renders every row in that table as an HTML table, protected by
+  HTTP Basic Auth (`DATA_USERNAME` / `DATA_PASSWORD`) so only the GSI and
+  the deployer can view it. It isn't linked from the participant-facing
+  pages.
 
 ## Running it locally
 
@@ -57,7 +58,12 @@ git-push auto-deploy).
 **Backup: [Render](https://render.com)** as a free Web Service:
 - **Build command:** `pip install -r requirements.txt`
 - **Start command:** `gunicorn app:app`
-- **Environment variable:** `SECRET_KEY` (used to sign session cookies)
+- **Environment variables:** `SECRET_KEY` (signs session cookies),
+  `DATA_USERNAME` / `DATA_PASSWORD` (protects `/data`)
+
+On PythonAnywhere, these same variables are set with `os.environ[...] = ...`
+directly in the WSGI configuration file instead, since the free tier has no
+separate environment-variables panel.
 
 Free Web Services on Render sleep after about 15 minutes of no traffic and
 have no persistent disk. Effect: **any previously collected labels are lost**

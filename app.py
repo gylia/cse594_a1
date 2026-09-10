@@ -1,11 +1,13 @@
+import functools
 import json
 import os
 import random
+import secrets
 import sqlite3
 import uuid
 from datetime import datetime, timezone
 
-from flask import Flask, g, redirect, render_template, request, session, url_for
+from flask import Flask, Response, g, redirect, render_template, request, session, url_for
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "labels.db")
@@ -13,8 +15,31 @@ TWEETS_PATH = os.path.join(BASE_DIR, "data", "tweets.json")
 TWEETS_PER_PARTICIPANT = 5
 EMOTIONS = ["anger", "fear", "joy", "love", "sadness", "surprise"]
 
+DATA_USERNAME = os.environ.get("DATA_USERNAME", "admin")
+DATA_PASSWORD = os.environ.get("DATA_PASSWORD", "changeme")
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-me")
+
+
+def require_data_auth(view):
+    @functools.wraps(view)
+    def wrapped(*args, **kwargs):
+        auth = request.authorization
+        valid = (
+            auth is not None
+            and secrets.compare_digest(auth.username, DATA_USERNAME)
+            and secrets.compare_digest(auth.password, DATA_PASSWORD)
+        )
+        if not valid:
+            return Response(
+                "Authentication required.",
+                401,
+                {"WWW-Authenticate": 'Basic realm="Collected data"'},
+            )
+        return view(*args, **kwargs)
+
+    return wrapped
 
 with open(TWEETS_PATH, encoding="utf-8") as f:
     TWEETS = json.load(f)
@@ -122,6 +147,7 @@ def done():
 
 
 @app.route("/data")
+@require_data_auth
 def data():
     db = get_db()
     rows = db.execute(
