@@ -3,8 +3,16 @@
 A minimal Flask + SQLite web app where participants label 5 randomly sampled
 tweets with one of six emotions (anger, fear, joy, love, sadness, surprise).
 
-**Live link:** https://cse594-a1.onrender.com
-**View collected data:** https://cse594-a1.onrender.com/data
+**Live link (preferred):** https://gylia.pythonanywhere.com
+**View collected data:** https://gylia.pythonanywhere.com/data
+
+This link stays up continuously with no cold start, and collected data
+persists across reloads. It is scheduled to expire on **Saturday, October
+10, 2026** (PythonAnywhere's free tier requires a monthly login to keep a
+site active); it can be renewed by logging in and extending it, but that
+will not be done for the purposes of this assignment.
+
+**Backup link:** https://cse594-a1.onrender.com (see limitations below)
 
 ## How it works
 
@@ -39,23 +47,24 @@ automatically in the project root on first run.
 
 ## Deployment
 
-Deployed on [Render](https://render.com) as a free Web Service:
+**Primary: [PythonAnywhere](https://www.pythonanywhere.com)** (free "Beginner"
+tier), source at `/home/gylia/cse594_a1`, deployed as a manually-configured
+WSGI web app rather than through `Procfile`/`gunicorn`. No cold start, data
+persists across reloads. Redeploying a code change means `git pull` inside
+the PythonAnywhere console, then clicking Reload on the Web tab (no
+git-push auto-deploy).
+
+**Backup: [Render](https://render.com)** as a free Web Service:
 - **Build command:** `pip install -r requirements.txt`
 - **Start command:** `gunicorn app:app`
 - **Environment variable:** `SECRET_KEY` (used to sign session cookies)
-
-## Known limitations of the free Render tier
 
 Free Web Services on Render sleep after about 15 minutes of no traffic and
 have no persistent disk. Effect: **any previously collected labels are lost**
 whenever the instance sleeps and wakes back up, or whenever a new deploy
 runs. A participant opening the link after an idle period will also hit a
 ~30 second loading screen first, which can look like the link is broken if
-they don't wait it out.
-
-Fix: a paid Render plan (no spin-down, persistent disk), or swap SQLite for
-a hosted database with its own free tier (Render's own Postgres, Supabase,
-Neon).
+they don't wait it out. This is why PythonAnywhere is the preferred link.
 
 ## Project structure
 
